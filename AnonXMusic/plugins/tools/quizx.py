@@ -36,7 +36,7 @@ async def send_quiz(client, callback_query):
     poll_message = await callback_query.message.reply_poll(
         QUESTION,
         options=OPTIONS,
-        type=PollType.QUIZ,
+        type=PollType.REGULAR,
         correct_option_id=CORRECT_OPTION_ID,
         explanation="Paris is the capital of France.",
         is_anonymous=True,
