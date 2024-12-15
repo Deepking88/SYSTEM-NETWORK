@@ -5,11 +5,10 @@ from PyPDF2 import PdfReader  # For extracting text from PDF
 from AnonXMusic import app
 
 async def extract_pdf_text(file_path):
-    """Extract text from a PDF file using PyPDF2."""
     reader = PdfReader(file_path)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()  # Extract text from each page
+        text += page.extract_text()  # Extracts text from each page
     return text
 
 
