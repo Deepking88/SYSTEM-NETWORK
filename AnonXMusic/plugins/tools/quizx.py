@@ -4,12 +4,21 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from PyPDF2 import PdfReader  # For extracting text from PDF
 from AnonXMusic import app
 
-async def extract_pdf_text(file_path):
-    reader = PdfReader(file_path)
+
+async def handle_pdf(file_path):
+    # Use a thread executor for blocking operations
+    loop = asyncio.get_event_loop()
+    text = await loop.run_in_executor(None, extract_text_from_pdf, file_path)
+    lines = text.splitlines()  # Now, lines will work correctly
+    return lines
+
+def extract_text_from_pdf(pdf_path):
+    reader = PdfReader(pdf_path)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()  # Extracts text from each page
+        text += page.extract_text()
     return text
+
 
 
 @app.on_message(filters.document)
