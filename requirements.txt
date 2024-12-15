@@ -24,6 +24,6 @@ yt-dlp
 youtube-search
 youtube-search-python
 googletrans
-pyrofork
 pikepdf
 PyPDF2
+pyrogrammod
