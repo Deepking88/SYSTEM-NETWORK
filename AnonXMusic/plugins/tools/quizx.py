@@ -1,21 +1,21 @@
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from pikepdf import Pdf  # Used for extracting text from PDF
+from PyPDF2 import PdfReader  # For extracting text from PDF
 from AnonXMusic import app
 
 async def extract_pdf_text(file_path):
-    """Extract text from PDF file"""
-    with Pdf.open(file_path) as pdf:
-        text = ""
-        for page in pdf.pages:
-            text += page.extract_text()
-        return text
+    """Extract text from a PDF file using PyPDF2."""
+    reader = PdfReader(file_path)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text()  # Extract text from each page
+    return text
 
 
 @app.on_message(filters.document)
 async def handle_pdf(client, message: Message):
-    """Handle the received PDF document and create a poll"""
+    """Handle the received PDF document and create a poll."""
     
     # Check if the document is a PDF
     if message.document.mime_type != "application/pdf":
@@ -26,7 +26,7 @@ async def handle_pdf(client, message: Message):
     file_path = await client.download_media(message.document.file_id)
 
     # Extract text from the PDF
-    text = await extract_pdf_text(file_path)
+    text = extract_pdf_text(file_path)
 
     if not text:
         await message.reply("Could not extract text from the PDF.")
