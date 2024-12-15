@@ -1,4 +1,5 @@
 # Define the poll sending function
+import asyncio
 from AnonXMusic import app 
 from pyrogram import Client, filters, Message 
 
