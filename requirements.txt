@@ -23,8 +23,5 @@ unidecode
 yt-dlp
 youtube-search
 youtube-search-python
-googletrans
-pikepdf
-PyPDF2
-pyrogrammod
 telethon
+pyrofork
