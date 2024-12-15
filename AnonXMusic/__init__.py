@@ -3,8 +3,9 @@ from AnonXMusic.core.dir import dirr
 from AnonXMusic.core.git import git
 from AnonXMusic.core.userbot import Userbot
 from AnonXMusic.misc import dbb, heroku
-
+from telethon import TelegramClient, events
 from .logging import LOGGER
+from config import *
 
 dirr()
 git()
@@ -14,6 +15,7 @@ heroku()
 app = Anony()
 userbot = Userbot()
 
+botx = TelegramClient('bot', api_id=API_ID, api_hash=API_HASH).start(bot_token=BOT_TOKEN)
 
 from .platforms import *
 
