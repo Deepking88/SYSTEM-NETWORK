@@ -3,8 +3,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pikepdf import Pdf  # Used for extracting text from PDF
 from io import BytesIO
-from AnonXMusic import app 
-
+from AnonXMusic import app
 
 async def extract_pdf_text(file):
     """Extract text from PDF file"""
@@ -14,15 +13,11 @@ async def extract_pdf_text(file):
             text += page.extract_text()
         return text
 
-
-@app.on_message(filters.document)
+@app.on_message(filters.document & filters.document.mime_type("application/pdf"))
 async def handle_pdf(client, message: Message):
-    if message.document.mime_type != "application/pdf":
-        await message.reply("Please send a valid PDF file.")
-        return
-    
-    # Download the PDF file
-    pdf_file = await message.document.download()
+    """Handle the received PDF document and create a poll"""
+    # Download the PDF file using the correct method
+    pdf_file = await client.download_media(message.document.file_id)
 
     # Extract text from PDF
     text = await extract_pdf_text(pdf_file)
