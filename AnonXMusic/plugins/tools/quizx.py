@@ -17,7 +17,7 @@ CORRECT_OPTION_ID = 2  # 0-based index of the correct answer (Paris)
 
 
 # Start command to send the quiz poll
-@app.on_message(filters.command("nstart"))
+@app.on_message(filters.command("mstart"))
 async def start_quiz(client, message):
     # Send the quiz as a poll
     keyboard = InlineKeyboardMarkup(
