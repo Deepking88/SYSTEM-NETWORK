@@ -2,7 +2,7 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pikepdf import Pdf  # Used for extracting text from PDF
-
+from AnonXMusic import app
 
 async def extract_pdf_text(file_path):
     """Extract text from PDF file"""
