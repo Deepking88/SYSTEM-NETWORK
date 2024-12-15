@@ -1,6 +1,6 @@
 # Define the poll sending function
 from AnonXMusic import app 
-from pyrogram import Client, filters
+from pyrogram import Client, filters, Message 
 
 @app.on_message()
 async def send_poll(client, message):
