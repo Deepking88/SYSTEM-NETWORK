@@ -2,6 +2,7 @@
 import asyncio
 from AnonXMusic import app 
 from pyrogram import Client, filters 
+from pyrogram.types import PollOption
 
 @app.on_message()
 async def send_poll(client, message):
