@@ -1,13 +1,11 @@
-from AnonXMusic import botx
 import asyncio
 from telethon import TelegramClient, events, types
-from telethon.tl.types import PollAnswer
+from AnonXMusic import botx
 
 # Define your poll question and options
 QUESTION = "What is the capital of France?"
 OPTIONS = ["Berlin", "Madrid", "Paris", "Rome"]
 CORRECT_OPTION_ID = 2  # Index for "Paris"
-
 
 # Handler for the /quiz command
 @botx.on(events.NewMessage(pattern='/quiz'))
@@ -26,7 +24,7 @@ async def send_quiz(event):
     )
     await event.reply("Quiz sent!")
 
-# Handler to handle the poll answers
+# Correct event to handle poll answers (using events.PollAnswer)
 @botx.on(events.PollAnswer)
 async def handle_poll_answer(event):
     answer = event.poll_answer
