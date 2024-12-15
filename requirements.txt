@@ -26,3 +26,4 @@ youtube-search-python
 googletrans
 pyrofork
 pikepdf
+PyPDF2
