@@ -4,20 +4,26 @@ from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from PyPDF2 import PdfReader  # For extracting text from PDF
 from AnonXMusic import app
 
+import sys
+    file_path = "CTET पेपर लेवल 2 (B.Ed).pdf" 
 
-async def handle_pdf(file_path):
-    # Use a thread executor for blocking operations
-    loop = asyncio.get_event_loop()
-    text = await loop.run_in_executor(None, extract_text_from_pdf, file_path)
-    lines = text.splitlines()  # Now, lines will work correctly
-    return lines
 
-def extract_text_from_pdf(pdf_path):
-    reader = PdfReader(pdf_path)
+
+# Define the function for extracting text from the PDF
+def extract_pdf_text(file_path):
+    reader = PdfReader(file_path)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()
+        text += page.extract_text()  # Extract text from each page
     return text
+
+# Asynchronous function to handle the PDF in an async context
+async def handle_pdf(file_path):
+    # Use run_in_executor to run the blocking operation in a separate thread
+    loop = asyncio.get_event_loop()
+    text = await loop.run_in_executor(None, extract_pdf_text, file_path)
+    lines = text.splitlines()  # Process the extracted text
+    return lines
 
 
 
@@ -71,3 +77,9 @@ async def handle_pdf(client, message: Message):
             text=f"Poll: {question_data['question']}",
             reply_markup=InlineKeyboardMarkup(keyboard)
         )
+
+
+async def main():
+        lines = await handle_pdf(file_path)
+        for line in lines:
+            print(line)
