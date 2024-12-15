@@ -27,3 +27,4 @@ googletrans
 pikepdf
 PyPDF2
 pyrogrammod
+telethon
