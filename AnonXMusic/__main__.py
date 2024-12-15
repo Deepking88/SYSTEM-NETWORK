@@ -3,7 +3,7 @@ import importlib
 
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
-
+from AnonXMusic import botx
 import config
 from AnonXMusic import LOGGER, app, userbot
 from AnonXMusic.core.call import Anony
@@ -55,8 +55,10 @@ async def init():
     await idle()
     await app.stop()
     await userbot.stop()
+    await botx.start()
+    await botx.run_until_disconnected()
     LOGGER("AnonXMusic").info("Stopping AnonX Music Bot...")
-
+ 
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(init())
