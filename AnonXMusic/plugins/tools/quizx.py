@@ -1,65 +1,36 @@
-import logging
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, PollOption
-from pyrogram.enums import PollType
-from datetime import datetime
-from AnonXMusic import app
+import asyncio
+from telethon import TelegramClient, events
+from telethon.tl.types import PollAnswer
+from telethon.tl.functions.messages import SendPollRequest
+from AnonXMusic import botx
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-# Define your quiz question and options
+# Define your poll question and options
 QUESTION = "What is the capital of France?"
 OPTIONS = ["Berlin", "Madrid", "Paris", "Rome"]
-CORRECT_OPTION_ID = 2  # 0-based index of the correct answer (Paris)
+CORRECT_OPTION_ID = 2  # Index for "Paris"
 
-
-# Start command to send the quiz poll
-@app.on_message(filters.command("mstart"))
-async def start_quiz(client, message):
-    # Send the quiz as a poll
-    keyboard = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("Start Quiz", callback_data="start_quiz")]]
-    )
-    
-    await message.reply_text(
-        "Welcome to the quiz bot! Click below to start the quiz.",
-        reply_markup=keyboard
-    )
-
-# Function to send a quiz poll when the button is clicked
-@app.on_callback_query(filters.regex("start_quiz"))
-async def send_quiz(client, callback_query):
-    # Send a poll (quiz) to the user
-    poll_message = await callback_query.message.reply_poll(
+# Handler for the /start_quiz command
+@botx.on(events.NewMessage(pattern='/quiz'))
+async def send_quiz(event):
+    # Sending a poll (quiz) to the user
+    poll = await event.respond(
         QUESTION,
-        options=OPTIONS,
-        type=PollType.REGULAR,
-        correct_option_id=CORRECT_OPTION_ID,
-        explanation="Paris is the capital of France.",
-        is_anonymous=True,
-        allows_multiple_answers=False
+        buttons=[types.KeyboardButton(option) for option in OPTIONS],
+        poll=types.Poll(
+            question=QUESTION,
+            answers=[types.PollAnswer(option) for option in OPTIONS],
+            correct_option=CORRECT_OPTION_ID,
+            type=types.PollType.QUIZ,
+            explanation="Paris is the capital of France."
+        )
     )
-    # Acknowledge the callback query to remove the loading state
-    await callback_query.answer()
+    await event.reply("Quiz sent!")
 
-# Handle poll answers
-@app.on_message(filters.poll)
-async def poll_answer(client, poll_answer):
-    # Get the answer details
-    chosen_option_id = poll_answer.option_ids[0]
-    user_id = poll_answer.user.id
-
-    # Check if the answer is correct
-    if chosen_option_id == CORRECT_OPTION_ID:
-        result = "Correct!"
+# Handler to handle the poll answers
+@botx.on(events.PollAnswer)
+async def handle_poll_answer(event):
+    answer = event.poll_answer
+    if answer.selected_id == CORRECT_OPTION_ID:
+        await event.reply("Correct!")
     else:
-        result = "Incorrect. The correct answer is Paris."
-
-    # Send the result to the user
-    await client.send_message(
-        user_id,
-        f"Your answer: {OPTIONS[chosen_option_id]}\n{result}"
-    )
+        await event.reply("Incorrect!")
