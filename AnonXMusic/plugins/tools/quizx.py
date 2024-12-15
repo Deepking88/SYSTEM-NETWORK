@@ -46,7 +46,7 @@ async def send_quiz(client, callback_query):
     await callback_query.answer()
 
 # Handle poll answers
-@app.on_poll_answer()
+@Client.on_poll_answer()
 async def poll_answer(client, poll_answer):
     # Get the answer details
     chosen_option_id = poll_answer.option_ids[0]
