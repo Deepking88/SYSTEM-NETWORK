@@ -1,6 +1,7 @@
 import asyncio
 import importlib
-
+from AnonXMusic.plugins.telegram import start_handler, quiz_handler, help_handler, callback_query_handler
+from config import *
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
 from AnonXMusic import botx
