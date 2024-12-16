@@ -11,6 +11,7 @@ from AnonXMusic.misc import sudo
 from AnonXMusic.plugins import ALL_MODULES
 from AnonXMusic.utils.database import get_banned_users, get_gbanned
 from config import BANNED_USERS
+from AnonXMusic import botxx
 
 
 async def init():
@@ -57,6 +58,18 @@ async def init():
     await userbot.stop()
     await botx.start()
     await botx.run_until_disconnected()
+    # Add handlers
+    botxx.add_handler(start_handler)
+    botxx.add_handler(quiz_handler)
+    botxx.add_handler(help_handler)
+    botxx.add_handler(callback_query_handler)
+
+    # Start the bot
+    print("Bot is running...")
+    await botxx.initialize()
+    await botxx.start()
+    await botxx.updater.start_polling()
+    await botxx.updater.idle()
     LOGGER("AnonXMusic").info("Stopping AnonX Music Bot...")
  
 
