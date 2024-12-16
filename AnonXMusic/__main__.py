@@ -1,6 +1,5 @@
 import asyncio
 import importlib
-from AnonXMusic.plugins.tools.telegram import start_handler, quiz_handler, help_handler, callback_query_handler
 from config import *
 from pyrogram import idle
 from pytgcalls.exceptions import NoActiveGroupCall
@@ -60,10 +59,10 @@ async def init():
     await botx.start()
     await botx.run_until_disconnected()
     # Add handlers
-    botxx.add_handler(start_handler)
-    botxx.add_handler(quiz_handler)
-    botxx.add_handler(help_handler)
-    botxx.add_handler(callback_query_handler)
+  #  botxx.add_handler(start_handler)
+  #  botxx.add_handler(quiz_handler)
+  #  botxx.add_handler(help_handler)
+  #  botxx.add_handler(callback_query_handler)
 
     # Start the bot
     print("Bot is running...")
