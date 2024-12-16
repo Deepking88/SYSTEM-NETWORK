@@ -9,7 +9,7 @@ CORRECT_OPTION_ID = 2  # Index for "Paris"
 
 
 # Handler for the /quiz command
-@botx.on(events.NewMessage(pattern='/quiz'))
+@botx.on(events.NewMessage(pattern='/los'))
 async def send_quiz(event):
     # Sending a poll (quiz) to the user
     poll = await event.respond(
