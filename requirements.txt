@@ -25,4 +25,4 @@ youtube-search
 youtube-search-python
 telethon
 pyrofork
-python-telegram-bot==20.5
+python-telegram-bot
