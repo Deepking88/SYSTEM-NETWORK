@@ -153,17 +153,22 @@ async def import_database(client: Client, message):
         if isinstance(data, dict):  
             for db_name, collections in data.items():
                 db = mongo_client[db_name]
-                if isinstance(collections, dict):
+                if isinstance(collections, dict):  # Check that collections is a dictionary
                     for collection_name, documents in collections.items():
-                        if documents:
-                            collection = db[collection_name]
-                            for document in documents:
-                                await collection.replace_one(
-                                    {"_id": document["_id"]}, document, upsert=True
-                                )
+                        if isinstance(documents, list):  # Check that documents is a list
+                            if documents:
+                                collection = db[collection_name]
+                                for document in documents:
+                                    await collection.replace_one(
+                                        {"_id": document["_id"]}, document, upsert=True
+                                    )
+                            else:
+                                await mystic.edit(f"No documents to import in collection `{collection_name}`.")
+                        else:
+                            await mystic.edit(f"Error: The collection `{collection_name}` does not have a list of documents.")
                     await mystic.edit(f"Database `{db_name}` imported successfully.")
                 else:
-                    await mystic.edit(f"Error: Invalid format for collections in database `{db_name}`.")
+                    await mystic.edit(f"Error: The database `{db_name}` does not have a valid format for collections. Expected a dictionary.")
         else:
             await mystic.edit("Error: Backup file should be a dictionary of databases and collections.")
     except Exception as e:
