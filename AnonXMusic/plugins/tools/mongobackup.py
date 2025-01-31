@@ -15,7 +15,7 @@ from pymongo.errors import OperationFailure
 from config import *
 from AnonXMusic import app
 
-
+from config import MONGO_DB_URI
 
 
 # Temporary storage for URIs (per user)
@@ -113,24 +113,30 @@ async def export_all_databases(client, message):
     await mystic.edit_text("All accessible databases exported and processed.")
 
 
+import json
+import os
+from motor.motor_asyncio import AsyncIOMotorClient
+from pyrogram import Client, filters
+from pyrogram.errors import FloodWait
+import asyncio
+
 @app.on_message(filters.command("import"))
-async def import_database(client, message):
+async def import_database(client: Client, message):
     """Import a database backup from a file."""
+    
     if MONGO_DB_URI is None:
-        return await message.reply_text(
-            "Please set your `MONGO_DB_URI` to use this feature."
-        )
+        return await message.reply("Please set your `MONGO_DB_URI` to use this feature.")
 
     if not message.reply_to_message or not message.reply_to_message.document:
-        return await message.reply_text("Reply to a backup file to import it.")
+        return await message.reply("Reply to a backup file to import it.")
 
-    mystic = await message.reply_text("Downloading backup file...")
+    mystic = await message.reply("Downloading backup file...")
 
     async def progress(current, total):
         try:
-            await mystic.edit_text(f"Downloading... {current * 100 / total:.1f}%")
+            await mystic.edit(f"Downloading... {current * 100 / total:.1f}%")
         except FloodWait as e:
-            await asyncio.sleep(e.value)
+            await asyncio.sleep(e.x)
 
     file_path = await message.reply_to_message.download(progress=progress)
 
@@ -138,27 +144,32 @@ async def import_database(client, message):
         with open(file_path, "r") as backup_file:
             data = json.load(backup_file)
     except (json.JSONDecodeError, IOError):
-        return await edit_or_reply(
-            mystic, "Invalid backup file format. Please provide a valid JSON file."
-        )
+        return await mystic.edit("Invalid backup file format. Please provide a valid JSON file.")
 
     mongo_client = AsyncIOMotorClient(MONGO_DB_URI)
 
     try:
-        for db_name, collections in data.items():
-            db = mongo_client[db_name]
-            for collection_name, documents in collections.items():
-                if documents:
-                    collection = db[collection_name]
-                    for document in documents:
-                        await collection.replace_one(
-                            {"_id": document["_id"]}, document, upsert=True
-                        )
-            await mystic.edit_text(f"Database `{db_name}` imported successfully.")
+        # Assuming the data is a dictionary of databases
+        if isinstance(data, dict):  
+            for db_name, collections in data.items():
+                db = mongo_client[db_name]
+                if isinstance(collections, dict):
+                    for collection_name, documents in collections.items():
+                        if documents:
+                            collection = db[collection_name]
+                            for document in documents:
+                                await collection.replace_one(
+                                    {"_id": document["_id"]}, document, upsert=True
+                                )
+                    await mystic.edit(f"Database `{db_name}` imported successfully.")
+                else:
+                    await mystic.edit(f"Error: Invalid format for collections in database `{db_name}`.")
+        else:
+            await mystic.edit("Error: Backup file should be a dictionary of databases and collections.")
     except Exception as e:
-        await mystic.edit_text(f"Error during import: {e}. Rolling back changes.")
-    os.remove(file_path)
+        await mystic.edit(f"Error during import: {e}. Rolling back changes.")
     
+    os.remove(file_path)
 
 
 @app.on_message(filters.command("nstart"))
