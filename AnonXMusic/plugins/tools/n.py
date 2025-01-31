@@ -45,7 +45,7 @@ def restore_mongo_db(backup_file_path):
         return False
 
 # Command handler for /import (process backup file sent by user)
-@app.on_message(filters.command("import"))
+@app.on_message(filters.command("sg"))
 async def import_backup(client, message: Message):
     # Check if a file is provided with the command
     if message.document:
