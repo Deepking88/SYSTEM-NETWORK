@@ -2,7 +2,7 @@ import os
 import json
 from pymongo import MongoClient
 from pyrogram import Client, filters
-from PURVIMUSIC import app
+from AnonXMusic import app
 
 # MongoDB connection setup
 MONGODB_URI = "mongodb+srv://jay:jay@jay.r2lxx.mongodb.net/?retryWrites=true&w=majority&appName=jay"  # Update to your MongoDB URI
